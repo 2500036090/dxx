@@ -61,9 +61,6 @@ data_train.loc[data_train['isDefault'] == 0] \
 
 
 
-
-
-
 #pandas
 
 #类别变量及数值变量
@@ -81,7 +78,23 @@ def get_numerical_serial_fea(data,feas):
             continue
         numerical_serial_fea.append(fea)
     return numerical_serial_fea,numerical_noserial_fea
-numerical_serial_fea,numerical_noserial_fea = get_numerical_serial_fea(data_train,numerical_fea)
+def plot(data_train):
+    ##变量分类
+    numerical_fea = list(data_train.select_dtypes(exclude=['object']).columns)
+    category_fea = list(filter(lambda x: x not in numerical_fea,list(data_train.columns)))
+    numerical_serial_fea,numerical_noserial_fea = get_numerical_serial_fea(data_train,numerical_fea)
+    #类别数据可视化
+    for i in range(0,len(numerical_noserial_fea),2):
+        f, [ax1,ax2] = plt.subplots(1, 2, figsize=(20, 5))
+        sns.countplot(x=numerical_noserial_fea[i],  data=data_train,ax=ax1)
+        sns.countplot(x=numerical_noserial_fea[i+1],  data=data_train,ax=ax2)
+    #数值型变量可视化
+    ##注意第一个参数不是0就是1
+    for i in range(1,len(numerical_serial_fea),2):
+        f, [ax1,ax2] = plt.subplots(1, 2, figsize=(20, 5))
+        data_train[numerical_serial_fea[i]].hist(ax=ax1)
+        data_train[numerical_serial_fea[i+1]].hist(ax=ax2)。
+numerical_serial_fea,numerical_noserial_fea = get_numerical_serial_fea(data_train,numerical_fea)。
 
 #数值型连续型变量可视化
 f = pd.melt(data_train, value_vars=numerical_serial_fea)
